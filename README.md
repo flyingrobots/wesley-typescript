@@ -2,7 +2,7 @@
 
 A [Wesley](https://github.com/flyingrobots/wesley) target that emits TypeScript: declarations, operation bindings, and little-endian binary codecs.
 
-Wesley compiles GraphQL SDL into an intermediate representation (IR), and does nothing else: it attaches no meaning to any directive and runs no targets. Every output language is its own repository, a standalone program and library that reads the IR (`wesley schema lower --json`). This one is a **generic** target: it understands no directives and emits plain GraphQL, and it is the language tooling other targets (such as [wesley-parley](https://github.com/flyingrobots/wesley-parley)) render through. The decisions are recorded in flyingrobots/parley#116 and flyingrobots/wesley#882.
+Wesley compiles GraphQL SDL into an intermediate representation (IR), and does nothing else: it attaches no meaning to any directive and runs no targets. Every output language is its own repository, a standalone program and library that reads the IR (`wesley schema lower --json`). This one is a **generic** target: it emits TypeScript from a plain GraphQL schema without giving any directive a meaning, and it is the language tooling other targets (such as [wesley-parley](https://github.com/flyingrobots/wesley-parley)) render through. The decisions are recorded in flyingrobots/parley#116 and flyingrobots/wesley#882.
 
 ## Status
 
@@ -17,8 +17,8 @@ The output is built as a syntax tree of the target language and printed by that 
 | Concern | Choice |
 | --- | --- |
 | Written in | Rust (stable) |
-| Syntax tree | `oxc_ast`, built with `oxc_ast::AstBuilder` |
-| Printer | `oxc_codegen` |
+| Syntax tree | `swc_ecma_ast` |
+| Printer | `swc_ecma_codegen` |
 | Checked by | `tsc --noEmit --strict` on every golden file |
 
 Rules every change keeps:
