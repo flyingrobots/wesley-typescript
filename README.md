@@ -10,6 +10,8 @@ Wesley compiles GraphQL SDL into an intermediate representation (IR), and does n
 
 The emitter does not yet meet the rules below: it prints a private model with a hand-written printer and embeds its codec runtime as a string literal (audit on flyingrobots/wesley#882). Moving its printing onto a real TypeScript syntax tree is issue #1.
 
+`crates/wesley-typescript-syntax` is the TypeScript syntax library that targets render through, and it does meet the rules. It builds exported interfaces and type aliases as an `swc_ecma_ast` tree and prints them with `swc_ecma_codegen`: the primitive, literal, named, array, union, inline object and `Record<string, T>` types; optional and readonly properties; keys that are not identifiers, as string-literal keys; and JSDoc on the module, declarations and properties, attached through swc's comment store. Invalid input is an error, not a panic, and every golden file is type-checked by `tsc --noEmit --strict`. Its first consumer is [wesley-parley](https://github.com/flyingrobots/wesley-parley) (flyingrobots/wesley-parley#1).
+
 ## How it generates code
 
 The output is built as a syntax tree of the target language and printed by that language's printer. There is no string templating and no regex anywhere in the generator.
