@@ -36,7 +36,11 @@ pub enum TsType {
     NumberLiteral(i64),
     /// `true` or `false`
     BooleanLiteral(bool),
-    /// A named type. The name must be an identifier that can name a type.
+    /// A named type. The name must be an identifier that can name a type:
+    /// not a reserved word, not a word TypeScript reads as a type keyword or
+    /// operator (`keyof`, `infer`, `readonly`, `string`, ...), and not
+    /// `Record`, which is reserved for [`TsType::Record`]. The same rule
+    /// applies to declaration names.
     Ref(String),
     /// `T[]`; a union element is parenthesised, `(A | B)[]`.
     Array(Box<TsType>),

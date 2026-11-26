@@ -22,18 +22,32 @@ const MAX_SAFE_INTEGER: i64 = (1 << 53) - 1;
 /// The type that `TsType::Record` names: `Record<string, T>`.
 const RECORD: &str = "Record";
 
-/// Names TypeScript reserves for its own types, which no declaration may take.
-const PREDEFINED_TYPE_NAMES: &[&str] = &[
+/// Names that cannot name a declared type or be referenced as one.
+///
+/// TypeScript's predefined type names; the words it reads as type operators
+/// or keywords in a type position (a reference `keyof` is parsed as the start
+/// of `keyof T`, TS1110); and `Record`, which `TsType::Record` prints and a
+/// declaration of that name would shadow (TS2315). ECMAScript reserved words
+/// such as `typeof` and `void` are refused separately by `verify_symbol`.
+const UNUSABLE_TYPE_NAMES: &[&str] = &[
     "any",
+    "asserts",
     "bigint",
     "boolean",
+    "infer",
+    "intrinsic",
+    "is",
+    "keyof",
     "never",
     "number",
     "object",
+    "readonly",
     "string",
     "symbol",
     "undefined",
+    "unique",
     "unknown",
+    RECORD,
 ];
 
 pub(crate) struct Builder {
@@ -260,11 +274,11 @@ fn declaration_doc(declaration: &Declaration) -> Option<&str> {
 }
 
 /// Whether `name` can name a declared type: an identifier that is not a
-/// reserved word and not one of TypeScript's predefined type names.
+/// reserved word and not in [`UNUSABLE_TYPE_NAMES`].
 fn is_type_name(name: &str) -> bool {
     crate::is_identifier_name(name)
         && ast::Ident::verify_symbol(name).is_ok()
-        && !PREDEFINED_TYPE_NAMES.contains(&name)
+        && !UNUSABLE_TYPE_NAMES.contains(&name)
 }
 
 fn check_declaration_name(name: &str) -> Result<(), Error> {

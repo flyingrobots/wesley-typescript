@@ -7,6 +7,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 ### Added
 
 - `crates/wesley-typescript-syntax`, the generic TypeScript syntax library: `print_module` builds exported interfaces and type aliases as an `swc_ecma_ast` tree, attaches JSDoc through swc's comment store, and prints with `swc_ecma_codegen`; `is_identifier_name` decides when a property key must be a string literal. Invalid input is an `Error`. Golden files are type-checked by `tsc --noEmit --strict`, and a test rejects TypeScript source in the crate's string literals (flyingrobots/wesley-parley#1).
+- Declaration names and `TsType::Ref` names refuse the words TypeScript reads as type keywords or operators in a type position (`keyof`, `infer`, `readonly`, `unique`, `asserts`, `is`, `intrinsic` and the predefined type names), which would print invalid source, and refuse `Record`, which `TsType::Record` prints and a declaration would shadow (review of #3).
 - CI sets up Node 22 so the TypeScript compiler check runs.
 - `crates/wesley-emit-typescript`, Wesley's existing emitter, moved from flyingrobots/wesley at `bfff0f9a` (0.3.0-alpha.4) with its history and the fixtures its tests read. It depends on the published `wesley-core` and `wesley-emit-codec` 0.3.0-alpha.4 (flyingrobots/wesley#882).
 - The repository, its license, and the rules for how the target generates code (flyingrobots/parley#116, flyingrobots/wesley#882).
