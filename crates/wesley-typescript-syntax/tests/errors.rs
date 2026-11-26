@@ -180,3 +180,65 @@ fn a_module_doc_without_declarations_is_an_error() {
         Err(Error::ModuleDocWithoutDeclarations)
     );
 }
+
+/// Words TypeScript reads as type operators or keywords in a type position;
+/// as a reference they would print invalid source (`export type Use = keyof;`
+/// fails with TS1110).
+const TYPE_POSITION_KEYWORDS: &[&str] = &[
+    "keyof",
+    "infer",
+    "readonly",
+    "unique",
+    "asserts",
+    "is",
+    "typeof",
+    "intrinsic",
+    "never",
+    "object",
+    "symbol",
+    "bigint",
+    "undefined",
+    "void",
+    "any",
+    "unknown",
+];
+
+#[test]
+fn a_type_position_keyword_is_not_a_type_reference() {
+    for name in TYPE_POSITION_KEYWORDS {
+        assert_eq!(
+            print_module(&alias("Use", TsType::Ref((*name).to_owned()))),
+            Err(Error::InvalidTypeReference((*name).to_owned())),
+            "{name}"
+        );
+    }
+}
+
+#[test]
+fn a_type_position_keyword_is_not_a_declaration_name() {
+    for name in TYPE_POSITION_KEYWORDS {
+        assert_eq!(
+            print_module(&alias(name, TsType::String)),
+            Err(Error::InvalidDeclarationName((*name).to_owned())),
+            "{name}"
+        );
+    }
+}
+
+/// `TsType::Record` prints `Record<string, T>`; a declaration named `Record`
+/// would shadow the built-in helper (TS2315), so the name is reserved.
+#[test]
+fn record_is_reserved_for_the_built_in_helper() {
+    assert_eq!(
+        print_module(&alias("Record", TsType::String)),
+        Err(Error::InvalidDeclarationName("Record".to_owned()))
+    );
+    assert_eq!(
+        print_module(&interface("Record", Vec::new())),
+        Err(Error::InvalidDeclarationName("Record".to_owned()))
+    );
+    assert_eq!(
+        print_module(&alias("Use", TsType::Ref("Record".to_owned()))),
+        Err(Error::InvalidTypeReference("Record".to_owned()))
+    );
+}
