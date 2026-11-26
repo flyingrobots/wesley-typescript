@@ -1,0 +1,18 @@
+[package]
+name = "wesley-typescript-syntax"
+version = "0.1.0"
+edition = "2021"
+description = "TypeScript declarations built as an swc syntax tree and printed by swc's code generator"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/flyingrobots/wesley-typescript"
+homepage = "https://github.com/flyingrobots/wesley-typescript#readme"
+documentation = "https://docs.rs/wesley-typescript-syntax"
+keywords = ["typescript", "codegen", "swc", "syntax"]
+categories = ["compilers"]
+
+[dependencies]
+swc_common = "28"
+swc_ecma_ast = "31"
+swc_ecma_codegen = "34"
+thiserror = "2"
