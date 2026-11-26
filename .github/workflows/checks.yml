@@ -17,6 +17,11 @@ jobs:
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
+      # The TypeScript compiler check (crates/wesley-typescript-syntax/tests/tsc.rs)
+      # runs tsc through npx; with CI set, a missing npx fails the test.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - run: cargo fmt --all -- --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo test --workspace --all-targets --locked
