@@ -12,6 +12,7 @@ keywords = ["typescript", "codegen", "swc", "syntax"]
 categories = ["compilers"]
 
 [dependencies]
+swc_atoms = "11"
 swc_common = "28"
 swc_ecma_ast = "31"
 swc_ecma_codegen = "34"

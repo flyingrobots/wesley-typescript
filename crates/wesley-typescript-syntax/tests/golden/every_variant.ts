@@ -15,7 +15,7 @@ export interface Run {
      */
     note?: unknown;
     parent: null;
-    quoted: "say \"hi\" \\ to\nthe tab\tand é";
+    quoted: 'say "hi" \\ to\nthe tab	and é';
     answer: 42;
     below: -7;
     always: true;
@@ -33,7 +33,8 @@ export interface Run {
     };
     env: Record<string, string>;
     counts: Record<string, number | null>;
-    empty: {};
+    empty: {
+    };
 }
 export type Command = {
     argv: string[];
