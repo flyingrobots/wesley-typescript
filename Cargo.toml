@@ -1,0 +1,3 @@
+[workspace]
+members = ["crates/wesley-emit-typescript"]
+resolver = "2"

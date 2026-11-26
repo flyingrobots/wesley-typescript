@@ -1,0 +1,5 @@
+#!/bin/sh
+# Lint must pass before a commit: formatting and clippy with warnings as errors.
+set -eu
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --locked -- -D warnings

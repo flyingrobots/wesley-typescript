@@ -1,0 +1,4 @@
+#!/bin/sh
+# Tests must pass before a push.
+set -eu
+cargo test --workspace --all-targets --locked

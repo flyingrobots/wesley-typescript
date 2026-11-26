@@ -9,6 +9,7 @@ Every pull request names a GitHub issue. If there is no issue for the change, op
 
 ## How changes are made
 
+- Enable the hooks once: `git config --local core.hooksPath scripts/hooks`. `pre-commit` runs `cargo fmt --check` and `cargo clippy -D warnings`; `pre-push` runs `cargo test`.
 - Write a failing test first, then the change that makes it pass.
 - Build output as a syntax tree and print it with the printer named in the [README](README.md). A pull request that writes generated code as strings is not merged.
 - A new golden file is checked by the real toolchain in CI, as the README says.
