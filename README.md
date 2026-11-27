@@ -30,6 +30,10 @@ Rules every change keeps:
 - **Deterministic to the byte.** The same IR and options give the same bytes on every machine. CI runs the generator twice and compares.
 - **The IR is the only input.** The target reads the published IR (flyingrobots/wesley#881) and never depends on Wesley's internals.
 
+## Releases
+
+`wesley-typescript-syntax` is published to crates.io from an annotated tag on main by the release workflow; [RELEASING.md](RELEASING.md) describes the procedure. `wesley-emit-typescript` is not published from this repository yet (flyingrobots/wesley#882).
+
 ## License
 
 Apache 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
