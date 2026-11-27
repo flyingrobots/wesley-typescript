@@ -24,4 +24,5 @@ The first crates.io release of `wesley-typescript-syntax`. `wesley-emit-typescri
 - `wesley-typescript-syntax` is versioned `0.1.0-alpha.1`.
 - `wesley-emit-typescript` has `publish = false`: its next release belongs to flyingrobots/wesley#882.
 - CI pins every action by commit SHA and runs `cargo publish --dry-run` for `wesley-typescript-syntax`.
+- The TypeScript compiler tests run `npx` one at a time: two parallel installs of `typescript@5` into an empty npm cache left a half-written package and failed CI with `Cannot find module '../lib/tsc.js'`.
 - The syntax tree and printer named in the README are swc's (`swc_ecma_ast`, `swc_ecma_codegen`) rather than oxc's, because swc prints JSDoc comments attached to synthetic nodes.
