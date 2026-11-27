@@ -27,7 +27,7 @@ The `publish` job runs in the `crates-io` GitHub environment, which requires the
 
 ## 4. What verify checks
 
-The `verify` job polls `cargo info wesley-typescript-syntax@<version> --registry crates-io` up to 20 times, 15 seconds apart, until crates.io serves the version. It then creates a scratch crate that depends on `wesley-typescript-syntax = "=<version>"` from crates.io, prints a small module with an interface, a union type alias, a readonly property, an optional property with a key that is not an identifier, and JSDoc, and type-checks the output with `npx --yes -p typescript@5 tsc --noEmit --strict`. A failure here means the published crate does not build or prints TypeScript the compiler rejects: yank it (below) and release a fixed version.
+The `verify` job polls `cargo info wesley-typescript-syntax@<version> --registry crates-io` up to 20 times, 15 seconds apart, until crates.io serves the version. It then creates a scratch crate that depends on `wesley-typescript-syntax = "=<version>"` from crates.io, prints a small module with an interface, a union type alias, a readonly property, an optional property with a key that is not an identifier, and JSDoc, and type-checks the output with `npx --yes -p typescript@5 tsc --noEmit --strict`. When the job fails, read its log before doing anything else. A failed poll, a registry or network error while resolving the dependency, or an `npx` download error says nothing about the crate: wait, then use "Re-run failed jobs" on the workflow run, which runs `verify` and then `github-release` again without publishing again. (A full re-run is also safe: `publish` skips the upload when the version is already on crates.io.) Yank (below) only when the log shows the published crate itself is broken: the scratch crate does not compile against it, or `tsc` rejects the TypeScript it prints. Then release a fixed version with a new number.
 
 The last job, `github-release`, creates the GitHub release for the tag with `gh release create --verify-tag`, using that version's CHANGELOG.md section as the notes, and marks it as a prerelease when the version has a `-` suffix. It is the only job with `contents: write`.
 
@@ -39,4 +39,6 @@ A published version cannot be deleted or overwritten. If it is broken, yank it s
 cargo yank --version 0.1.0-alpha.1 wesley-typescript-syntax
 ```
 
-`cargo yank --undo --version 0.1.0-alpha.1 wesley-typescript-syntax` reverses a yank. Record the yank and its reason in CHANGELOG.md, and edit the GitHub release to say the version is yanked; do not delete the tag.
+`cargo yank --undo --version 0.1.0-alpha.1 wesley-typescript-syntax` reverses a yank. Do not delete the tag. Record the yank in CHANGELOG.md by appending ` [YANKED]` to the version's heading and saying why under it; CHANGELOG.md is the record of a yank in every case.
+
+If the version has a GitHub release, also edit it to say the version is yanked and why. If it has none, because `verify` failed and `github-release` never ran, do not create one: a release would announce a version nobody should use. The tag, the CHANGELOG.md entry and the failed workflow run are the record.
