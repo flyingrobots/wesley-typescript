@@ -1,7 +1,10 @@
 [package]
 name = "wesley-typescript-syntax"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2021"
+# The highest rust-version among the dependencies (the icu crates under
+# swc_common); `cargo +1.88 check -p wesley-typescript-syntax` builds.
+rust-version = "1.88"
 description = "TypeScript declarations built as an swc syntax tree and printed by swc's code generator"
 license = "Apache-2.0"
 readme = "README.md"
@@ -9,7 +12,7 @@ repository = "https://github.com/flyingrobots/wesley-typescript"
 homepage = "https://github.com/flyingrobots/wesley-typescript#readme"
 documentation = "https://docs.rs/wesley-typescript-syntax"
 keywords = ["typescript", "codegen", "swc", "syntax"]
-categories = ["compilers"]
+categories = ["compilers", "development-tools"]
 
 [dependencies]
 swc_atoms = "11"

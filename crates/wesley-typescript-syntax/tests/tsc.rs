@@ -8,13 +8,22 @@
 //! The compiler is run as `npx --yes -p typescript@5 tsc --noEmit --strict`.
 //! When `npx` is not on `PATH` the test is skipped with a printed reason,
 //! unless the `CI` environment variable is set, in which case it fails.
+//!
+//! The tests run on parallel threads, but `npx` is run one at a time: two
+//! `npx` processes installing `typescript@5` into an empty npm cache at once
+//! leave a half-written package, and `tsc` then fails with
+//! `Cannot find module '../lib/tsc.js'`.
 
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
+use std::sync::Mutex;
 
 const EXPECT_PREFIX: &str = "// expect-error: ";
+
+/// Held while `npx` runs, so no two installs of `typescript@5` overlap.
+static NPX: Mutex<()> = Mutex::new(());
 
 fn crate_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -52,6 +61,11 @@ fn npx() -> Option<PathBuf> {
 }
 
 fn tsc(npx: &Path, files: &[PathBuf]) -> Output {
+    // A test that panicked while holding the lock poisons it; the lock
+    // guards no data, so the next run proceeds.
+    let _one_at_a_time = NPX
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
     Command::new(npx)
         .args([
             "--yes",

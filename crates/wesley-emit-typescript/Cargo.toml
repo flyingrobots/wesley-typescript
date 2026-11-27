@@ -10,6 +10,11 @@ homepage = "https://github.com/flyingrobots/wesley-typescript#readme"
 documentation = "https://docs.rs/wesley-emit-typescript"
 keywords = ["graphql", "compiler", "typescript", "codegen"]
 categories = ["compilers"]
+# Not published from this repository yet. wesley-emit-typescript 0.3.0-alpha.4
+# on crates.io was published from flyingrobots/wesley, and its next release
+# belongs to flyingrobots/wesley#882, which moves its publishing here. Until
+# then the release workflow can only publish wesley-typescript-syntax.
+publish = false
 
 [dependencies]
 serde_json = "1.0"
